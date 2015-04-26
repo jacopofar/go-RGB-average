@@ -27,21 +27,25 @@ onlydata := flag.Bool("t",false,"only display data with tabs")
           }
 
           if(!*onlydata && !stats.IsDir()){
-            fmt.Printf("Examining file %s\n",scanDir)
+            fmt.Printf("examining target %s...\n",scanDir)
           }
-          files, _ := ioutil.ReadDir(scanDir)
-            for _, f := range files {
-              ParseFile(scanDir,f,onlydata)
-            }
+          if stats.IsDir() {
+            files, _ := ioutil.ReadDir(scanDir)
+              for _, f := range files {
+                ParseFile(path.Join(scanDir,f.Name()),onlydata)
+              }
+          }else{
+            ParseFile(scanDir,onlydata)
+          }
 }
 
-func ParseFile(scanDir string,f os.FileInfo,onlydata *bool){
-  if strings.HasSuffix(strings.ToLower(f.Name()),"png"){
-    if(!*onlydata){fmt.Printf("found PNG file %s\n",f.Name())}
-    imReader,_ := os.Open(path.Join(scanDir,f.Name()))
+func ParseFile(fpath string,onlydata *bool){
+  if strings.HasSuffix(strings.ToLower(fpath),"png"){
+    if(!*onlydata){fmt.Printf("found PNG file %s\n",fpath)}
+    imReader,_ := os.Open(fpath)
       thisImg, err := png.Decode(imReader)
       if(err!=nil){
-        fmt.Fprintf(os.Stderr,"Error while decoding image %s : %s\n",path.Join(scanDir,f.Name()),err)
+        fmt.Fprintf(os.Stderr,"Error while decoding image %s : %s\n",fpath,err)
           return
       }
 
@@ -67,7 +71,7 @@ bounds := thisImg.Bounds()
             fmt.Printf("average RGB values: %f %f %f\n",sumR/float64(totNonTransparent),sumG/float64(totNonTransparent),sumB/float64(totNonTransparent))
         } else
         {
-          fmt.Printf("%s\t%f\t%f\t%f\n",path.Join(scanDir,f.Name()),sumR/float64(totNonTransparent),sumG/float64(totNonTransparent),sumB/float64(totNonTransparent))
+          fmt.Printf("%s\t%f\t%f\t%f\n",fpath,sumR/float64(totNonTransparent),sumG/float64(totNonTransparent),sumB/float64(totNonTransparent))
         }
   }
 
