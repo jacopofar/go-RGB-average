@@ -1,7 +1,7 @@
 Go RGB average value
 ====================
 
-This is an utility written in Go to retrieve the average value of RGB channels of one or more PNG files.
+This is an utility written in Go to retrieve the average value of RGB channels of one or more PNG and JPG files.
 
 Once compiled it has no dependencies and is made specifically to be called by a shell script.
 

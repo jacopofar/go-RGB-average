@@ -42,7 +42,7 @@ onlydata := flag.Bool("t",false,"only display data with tabs")
 }
 
 func ParseFile(fpath string,onlydata *bool){
-  if !strings.HasSuffix(strings.ToLower(fpath),"png") && !strings.HasSuffix(strings.ToLower(fpath),"jpg") && !strings.HasSuffix(strings.ToLower(fpath),"jpg") {
+  if !strings.HasSuffix(strings.ToLower(fpath),"png") && !strings.HasSuffix(strings.ToLower(fpath),"jpg") && !strings.HasSuffix(strings.ToLower(fpath),"jpeg") {
     return
   }
   if(!*onlydata){fmt.Printf("found image file %s\n",fpath)}
