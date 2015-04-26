@@ -6,7 +6,9 @@ import(
     "fmt"
     "io/ioutil"
     "strings"
+    "image"
     "image/png"
+    "image/jpeg"
     "path"
     )
 func main() {
@@ -40,14 +42,23 @@ onlydata := flag.Bool("t",false,"only display data with tabs")
 }
 
 func ParseFile(fpath string,onlydata *bool){
-  if strings.HasSuffix(strings.ToLower(fpath),"png"){
-    if(!*onlydata){fmt.Printf("found PNG file %s\n",fpath)}
-    imReader,_ := os.Open(fpath)
-      thisImg, err := png.Decode(imReader)
-      if(err!=nil){
-        fmt.Fprintf(os.Stderr,"Error while decoding image %s : %s\n",fpath,err)
-          return
-      }
+  if !strings.HasSuffix(strings.ToLower(fpath),"png") && !strings.HasSuffix(strings.ToLower(fpath),"jpg") && !strings.HasSuffix(strings.ToLower(fpath),"jpg") {
+    return
+  }
+  if(!*onlydata){fmt.Printf("found image file %s\n",fpath)}
+  imReader,_ := os.Open(fpath)
+    var thisImg image.Image
+    var err error
+    if strings.HasSuffix(strings.ToLower(fpath),"png"){
+      thisImg, err = png.Decode(imReader)
+    } else{
+      thisImg, err = jpeg.Decode(imReader)
+
+    }
+  if(err!=nil){
+    fmt.Fprintf(os.Stderr,"Error while decoding image %s : %s\n",fpath,err)
+      return
+  }
 
 bounds := thisImg.Bounds()
           sumR,sumG,sumB := 0., 0., 0.
@@ -73,6 +84,6 @@ bounds := thisImg.Bounds()
         {
           fmt.Printf("%s\t%f\t%f\t%f\n",fpath,sumR/float64(totNonTransparent),sumG/float64(totNonTransparent),sumB/float64(totNonTransparent))
         }
-  }
+
 
 }
